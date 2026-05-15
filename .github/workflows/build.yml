@@ -1,0 +1,32 @@
+name: Build Silicate
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # Позволяет запускать вручную
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Geode CLI
+        uses: geode-sdk/cli/.github/actions/setup@main
+
+      - name: Build mod
+        run: |
+          geode build --config RelWithDebInfo
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: silicate-mod
+          path: build/*.geode
+          if-no-files-found: warn
