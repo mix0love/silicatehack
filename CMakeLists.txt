@@ -69,7 +69,10 @@ add_library(${PROJECT_NAME} SHARED
     src/hooks/GJEffectManager.cpp
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/W4> $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall>)
+target_compile_options(${PROJECT_NAME} PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:/W4>
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wno-dollar-in-identifier-extension>
+)
 target_include_directories(${PROJECT_NAME} PRIVATE src include)
 
 if (NOT DEFINED ENV{GEODE_SDK})
