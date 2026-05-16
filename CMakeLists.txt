@@ -108,6 +108,15 @@ setup_geode_mod(${PROJECT_NAME})
 # INTERFACE library linked last. This suppresses $ warnings from $on_mod/$execute.
 if(NOT MSVC)
     add_library(_silicate_postflags INTERFACE)
-    target_compile_options(_silicate_postflags INTERFACE -Wno-dollar-in-identifier-extension)
+    target_compile_options(_silicate_postflags INTERFACE
+        -Wno-dollar-in-identifier-extension
+        -Wno-error=unused-parameter
+        -Wno-error=unused-variable
+        -Wno-error=unused-private-field
+        -Wno-error=sign-compare
+        -Wno-error=inconsistent-missing-override
+        -Wno-error=missing-designated-field-initializers
+        -Wno-error=extra-qualification
+    )
     target_link_libraries(${PROJECT_NAME} _silicate_postflags)
 endif()
