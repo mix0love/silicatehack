@@ -5,28 +5,27 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-  workflow_dispatch:  # Позволяет запускать вручную
+  workflow_dispatch:  # Позволяет запускать вручную из GitHub UI
 
 jobs:
   build:
+    name: Windows
     runs-on: windows-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: Setup Geode CLI
-        uses: geode-sdk/cli/.github/actions/setup@main
-
       - name: Build mod
-        run: |
-          geode build --config RelWithDebInfo
+        uses: geode-sdk/build-geode-mod@main
+        with:
+          build-config: RelWithDebInfo
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: silicate-mod
+          name: silicate-${{ github.sha }}
           path: build/*.geode
-          if-no-files-found: warn
+          if-no-files-found: error
