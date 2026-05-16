@@ -105,3 +105,9 @@ target_link_libraries(${PROJECT_NAME} libslc)
 target_compile_options(GeodeBindings PRIVATE -Wno-overloaded-virtual -Wno-unused-variable)
 
 setup_geode_mod(${PROJECT_NAME})
+
+# Geode adds -Wpedantic -Werror which re-enables dollar-in-identifier warnings.
+# $on_mod / $execute are standard Geode macros that use $, so suppress this after setup.
+target_compile_options(${PROJECT_NAME} PRIVATE
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wno-dollar-in-identifier-extension>
+)
