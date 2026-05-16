@@ -69,10 +69,7 @@ add_library(${PROJECT_NAME} SHARED
     src/hooks/GJEffectManager.cpp
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE
-    $<$<CXX_COMPILER_ID:MSVC>:/W4>
-    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wno-dollar-in-identifier-extension>
-)
+target_compile_options(${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/W4>)
 target_include_directories(${PROJECT_NAME} PRIVATE src include)
 
 if (NOT DEFINED ENV{GEODE_SDK})
@@ -106,8 +103,11 @@ target_compile_options(GeodeBindings PRIVATE -Wno-overloaded-virtual -Wno-unused
 
 setup_geode_mod(${PROJECT_NAME})
 
-# Geode adds -Wpedantic -Werror which re-enables dollar-in-identifier warnings.
-# $on_mod / $execute are standard Geode macros that use $, so suppress this after setup.
-target_compile_options(${PROJECT_NAME} PRIVATE
-    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wno-dollar-in-identifier-extension>
-)
+# Geode adds -Wpedantic -Werror via INTERFACE libraries, so target_compile_options
+# always ends up BEFORE them. The only way to add flags AFTER is via another
+# INTERFACE library linked last. This suppresses $ warnings from $on_mod/$execute.
+if(NOT MSVC)
+    add_library(_silicate_postflags INTERFACE)
+    target_compile_options(_silicate_postflags INTERFACE -Wno-dollar-in-identifier-extension)
+    target_link_libraries(${PROJECT_NAME} _silicate_postflags)
+endif()
