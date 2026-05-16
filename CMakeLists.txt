@@ -6,7 +6,9 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /FS")
+if(MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /FS")
+endif()
 
 project(silicate VERSION 1.0.0)
 
@@ -67,7 +69,7 @@ add_library(${PROJECT_NAME} SHARED
     src/hooks/GJEffectManager.cpp
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE /W4)
+target_compile_options(${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/W4> $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall>)
 target_include_directories(${PROJECT_NAME} PRIVATE src include)
 
 if (NOT DEFINED ENV{GEODE_SDK})
