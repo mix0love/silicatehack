@@ -202,7 +202,7 @@ static void runSlowLockDeltaUpdates(float realDt,
 
 void BotUpdater::runUpdates(std::function<void(float)> update, float realDt,
                             bool frozen) {
-    performAntiDebugChecks();
+    // performAntiDebugChecks();  // removed: function not defined
 
     auto bot = Bot::get();
     m_allowedToProcessActions = true;
@@ -565,7 +565,7 @@ static void earlyUpdateMidhook(SafetyHookContext&) {
     }
 }
 
-static void frameUpdateMidhook(SafetyHookContext& ctx) {
+static void frameUpdateMidhook(SafetyHookContext& /*ctx*/) {
     SCOPED_TIMER("frameUpdate")
 
     auto bot = Bot::get();
